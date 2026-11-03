@@ -21,7 +21,8 @@
 .app button { touch-action: manipulation; }
 .app .chat-header { min-height: 78px; padding: 10px 16px; }
 .app .contact-info h1 { font-size: 17px; font-weight: 600; letter-spacing: 0; }
-.app .contact-info > span { font-size: 11px; letter-spacing: 0; }
+.app .contact-info > span { font-size: 11px; letter-spacing: 0; display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.app .contact-info > span[hidden] { display: none; }
 /* ⚠️ 消息间距只用 margin，不用 flex gap：
    原先靠 `#messages { gap: 20px }` + `.is-continuation { margin-top: -14px }`
    相加得 6px。但 flex gap 在部分内嵌 WebView / 老 Safari 里不被支持，
