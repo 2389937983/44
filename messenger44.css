@@ -10,6 +10,14 @@
 .app[data-theme="light"] { --panel: #fff; --panel-soft: #f0f0f2; --label: #626268; }
 .app button { -webkit-tap-highlight-color: transparent; }
 .app :is(button, input, textarea, summary):focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+/* 聊天输入框不画自身 outline：它外面那圈 .input-wrap 已经是「输入框」的视觉边界，
+   再套一圈 2px 实线就成了截图里那个黑框（而且和 :focus-within 的 box-shadow 叠成两层）。
+   聚焦反馈改由 .input-wrap:focus-within 单独表达，见下方。 */
+.app .input-wrap textarea:focus-visible,
+.app .input-wrap textarea:focus {
+  outline: none;
+  box-shadow: none;
+}
 .app button { touch-action: manipulation; }
 .app .chat-header { min-height: 78px; padding: 10px 16px; }
 .app .contact-info h1 { font-size: 17px; font-weight: 600; letter-spacing: 0; }
