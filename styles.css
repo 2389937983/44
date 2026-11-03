@@ -41,7 +41,8 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
 .avatar-add svg { width: 16px; height: 16px; stroke-width: 2; }
 .contact-info { min-width: 0; flex: 1; }
 .contact-info h1 { font-size: 19px; font-weight: 500; margin: 0 0 6px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; letter-spacing: .8px; }
-.contact-info > span { font-size: 10px; color: var(--muted); letter-spacing: 1.2px; }
+.contact-info > span { font-size: 10px; color: var(--muted); letter-spacing: 1.2px; display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.contact-info > span[hidden] { display: none; }
 .more-wrap { position: relative; }
 .more-wrap > button svg { stroke-width: 2.8; }
 .profile-menu { position: absolute; right: 0; top: 54px; width: 206px; background: #fff; border: 1px solid var(--line); box-shadow: 0 10px 40px #0000000c; padding: 10px; border-radius: 10px; }
