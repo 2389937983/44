@@ -1,0 +1,293 @@
+/* Private messenger: page composition, not a bubble skin.
+   Message colors and user CSS remain owned by the existing appearance layers. */
+.app {
+  --panel: #292929;
+  --panel-soft: #242424;
+  --label: #b0b0b0;
+  --radius: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+.app[data-theme="light"] { --panel: #fff; --panel-soft: #f0f0f2; --label: #626268; }
+.app button { -webkit-tap-highlight-color: transparent; }
+.app :is(button, input, textarea, summary):focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.app button { touch-action: manipulation; }
+.app .chat-header { min-height: 78px; padding: 10px 16px; }
+.app .contact-info h1 { font-size: 17px; font-weight: 600; letter-spacing: 0; }
+.app .contact-info > span { font-size: 11px; letter-spacing: 0; }
+.app .messages { gap: 20px; padding-bottom: 28px; }
+.app .is-continuation { margin-top: -14px; }
+.app .message-meta time { font-size: 8px; letter-spacing: -.2px; }
+.app .gap-time { font-variant-numeric: tabular-nums; }
+.app .composer-area { padding: 12px 12px max(16px, env(safe-area-inset-bottom)); }
+.app .input-wrap { border-color: #ffffff09; }
+.app[data-theme="light"] .input-wrap { border-color: var(--line); }
+.app .input-wrap textarea { font-size: 15px; }
+.app .composer .icon-button { min-width: 36px; }
+.app .quick-actions { border-radius: 20px; padding: 12px 8px; }
+.app .quick-icon { border: 0; border-radius: 14px; width: 42px; height: 42px; }
+.app .quick-label { font-size: 11px; }
+
+/* Functional typography and page chrome replace the inherited editorial pages. */
+.app .page-header { min-height: 66px; padding: 11px 18px; border-bottom: 1px solid var(--line); }
+.app .page-header h2 { font-size: 15px; font-weight: 600; letter-spacing: 0; }
+.app .detail-scroll { background: var(--subtle); scrollbar-color: var(--control) transparent; }
+.app .detail-page { max-width: 640px; padding: 24px 20px 40px; }
+.app .section-intro { margin: 0 0 24px; }
+.app .section-intro .eyebrow { color: var(--muted); font-size: 9px; font-weight: 550; letter-spacing: 1.4px; }
+.app .section-intro h3 { font-family: inherit; font-size: 24px; font-weight: 600; letter-spacing: -.6px; line-height: 1.4; margin: 9px 0 8px; }
+.app .section-intro p { color: var(--label); font-size: 12px; letter-spacing: 0; line-height: 1.65; margin: 0; }
+.panel-caption { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 11px; color: var(--label); line-height: 1.5; }
+.panel-caption > span:last-child:not(:first-child) { font-size: 10px; color: var(--muted); }
+.panel-caption svg { width: 16px; height: 16px; }
+
+/* The two-person dashboard is the signature of this site. */
+.app .menu-view { background: var(--surface); }
+.messenger-wordmark { display: flex; align-items: center; gap: 9px; font-size: 18px; font-weight: 650; letter-spacing: -.5px; }
+.messenger-wordmark > svg { width: 25px; height: 25px; stroke-width: 1.6; }
+.messenger-wordmark > span { align-self: center; margin-left: 4px; padding-left: 12px; border-left: 1px solid var(--line); font-size: 8px; color: var(--muted); letter-spacing: 1.4px; font-weight: 450; }
+.app .menu-content { max-width: 600px; width: 100%; margin: 0 auto; padding: 20px 22px 14px; }
+.connection-panel { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 16px 20px 14px; }
+.local-badge { padding: 4px 8px; border: 1px solid var(--line); border-radius: 20px; font-size: 9px !important; }
+.connection-pair { display: flex; align-items: center; justify-content: center; padding: 23px 2px 15px; gap: 15px; }
+.connection-person { width: 104px; min-width: 0; display: flex; flex-direction: column; align-items: center; }
+.connection-person > img { width: 64px; height: 64px; border-radius: 19px; border: 1px solid var(--line); }
+.connection-person > strong { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 550; margin-top: 10px; }
+.connection-person > span { color: var(--muted); font-size: 10px; margin-top: 4px; }
+.connection-line { display: flex; align-items: center; gap: 8px; align-self: flex-start; margin-top: 24px; color: var(--muted); }
+.connection-line > svg { width: 17px; height: 17px; stroke-width: 1.3; }
+.connection-line > i { display: block; width: 15px; height: 1px; background: var(--muted); opacity: .45; }
+.connection-note { border-top: 1px solid var(--line); margin: 0; padding-top: 12px; text-align: center; font-size: 10px; color: var(--muted); letter-spacing: .3px; }
+.tools-caption { margin: 25px 2px 12px; }
+.app .main-navigation.messenger-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; border: 0; }
+.app .messenger-grid > button { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 14px; padding: 17px 15px; min-height: 111px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); transition: background .15s; }
+.app .messenger-grid > button:hover { padding-left: 15px; background: var(--hover); }
+.app .messenger-grid > button > svg:first-child { width: 24px; height: 24px; color: var(--ink); stroke-width: 1.5; }
+.app .messenger-grid strong { font-size: 14px; font-weight: 550; letter-spacing: 0; }
+.app .messenger-grid small { color: var(--muted); font-size: 10px; margin-top: 5px; letter-spacing: 0; line-height: 1.5; }
+.app .messenger-grid .nav-arrow { position: absolute; top: 18px; right: 12px; width: 15px; height: 15px; color: var(--muted); }
+.menu-appearance { display: flex; align-items: center; gap: 13px; width: 100%; padding: 15px; margin-top: 14px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); text-align: left; }
+.menu-appearance > span:nth-child(2) { flex: 1; min-width: 0; }
+.menu-appearance strong, .settings-profile strong, .dial-contact strong { display: block; font-size: 13px; font-weight: 550; overflow-wrap: anywhere; }
+.menu-appearance small, .settings-profile small, .dial-contact small { display: block; color: var(--muted); font-size: 10px; margin-top: 6px; line-height: 1.5; }
+.menu-appearance > svg { width: 17px; height: 17px; color: var(--muted); }
+.menu-appearance:hover { background: var(--hover); }
+.appearance-mini { position: relative; width: 38px; height: 37px; flex-shrink: 0; }
+.appearance-mini i { display: block; position: absolute; width: 27px; height: 18px; border-radius: 9px 9px 9px 2px; background: #757575; left: 0; top: 2px; }
+.appearance-mini i:last-child { background: #d7e1e8; border-radius: 9px 9px 2px 9px; right: 0; left: auto; top: 18px; border: 2px solid var(--panel); }
+.app .return-chat { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; height: 46px; margin: 18px 0 0; padding: 0 20px; border: 1px solid var(--line); border-radius: 13px; background: var(--action-bg); color: var(--action-ink); font-size: 12px; letter-spacing: 0; }
+.app .return-chat > svg { width: 17px; height: 17px; }
+.app .menu-footer { min-height: 40px; padding: 10px 20px max(12px, env(safe-area-inset-bottom)); justify-content: center; gap: 6px; font-family: inherit; font-size: 9px; color: var(--muted); }
+.privacy-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--muted); }
+
+/* A folder rail plus a single-column reply list, not quote cards. */
+.app .mode-tabs { padding: 4px; gap: 4px; background: var(--control); border-radius: 11px; margin-bottom: 18px; }
+.app .mode-chip { border: 0; border-radius: 8px; padding: 10px 12px; font-size: 12px; letter-spacing: 0; }
+.app .mode-chip.is-active { background: var(--action-bg); color: var(--action-ink); }
+.app .lib-actions { gap: 5px; padding: 0; margin-bottom: 20px; }
+.app .lib-actions .text-button { min-height: 40px; font-size: 10px; border: 1px solid var(--line); border-radius: 9px; padding: 8px 3px; background: var(--panel); letter-spacing: 0; }
+.folder-section { margin-bottom: 19px; }
+.folder-section > .panel-caption { margin: 0 1px 10px; }
+.app .folder-strip { gap: 9px; margin: 0; padding: 2px 2px 8px; border: 0; }
+.app .folder-strip .chip { flex: 0 0 115px; display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: 30px auto; align-items: center; gap: 6px; position: relative; min-height: 86px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 13px; background: var(--panel); color: var(--label); text-align: left; }
+.folder-strip .chip > svg { grid-column: 1 / -1; width: 24px; height: 24px; stroke-width: 1.3; }
+.folder-name { overflow: hidden; text-overflow: ellipsis; font-size: 11px; }
+.folder-count { font-size: 10px; opacity: .65; font-variant-numeric: tabular-nums; }
+.app .folder-strip .chip.is-active { background: var(--action-bg); border-color: var(--action-bg); color: var(--action-ink); }
+.app .folder-strip .chip.is-hidden::after { position: absolute; top: 12px; right: 9px; content: "隐藏"; font-size: 8px; }
+.app .lib-toolbar { align-items: center; gap: 12px; margin-bottom: 18px; }
+.app .search-box { min-height: 44px; border: 1px solid var(--line); border-radius: 11px; padding: 0 12px; background: var(--panel); }
+.app .search-box input { min-width: 0; font-size: 12px; padding-block: 12px; }
+.app .lib-toolbar > .text-button { flex-shrink: 0; min-height: 44px; font-size: 11px; }
+.library-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 5px 1px 12px; }
+.library-heading h4 { min-width: 0; font-size: 13px; font-weight: 550; margin: 0; overflow-wrap: anywhere; }
+.library-heading > span { color: var(--muted); font-size: 10px; white-space: nowrap; }
+.app .reply-list { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--panel); }
+.reply-list:empty { display: none; }
+.app .reply-list .word-card { display: block; min-height: 0; padding: 16px 17px 6px; background: transparent; border: 0; border-bottom: 1px solid var(--line); }
+.app .reply-list .word-card:last-child { border-bottom: 0; }
+.app .reply-list .word-card::before { display: none; }
+.app .reply-list .word-card > small { display: inline-block; margin: 0 0 8px; padding: 3px 7px; background: var(--subtle); border-radius: 5px; font-size: 9px; letter-spacing: 0; color: var(--muted); }
+.app .reply-list .word-card p { font-family: inherit; font-size: 14px; line-height: 1.8; margin: 0 0 8px; white-space: pre-line; overflow-wrap: anywhere; }
+.app .reply-list .word-card-actions { min-height: 42px; gap: 16px; border: 0; padding: 0; }
+.app .reply-list .word-card-actions button { min-height: 40px; font-size: 10px; letter-spacing: 0; }
+.app .reply-list .card-use { color: var(--ink); display: flex; align-items: center; gap: 7px; }
+.app .reply-list .card-use > span { float: none; }
+.app .lib-data-note { font-size: 10px; line-height: 1.8; color: var(--muted); margin-top: 18px; }
+.app .card-add-row { padding: 12px; background: var(--panel); border-radius: 12px; border: 1px solid var(--line); }
+.app .card-add-row textarea { border: 0; background: var(--subtle); font-size: 13px; }
+.app .poke-row { background: var(--panel); padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.app .poke-row p { font-family: inherit; font-size: 13px; }
+.app .poke-row button { min-height: 40px; }
+
+/* Appearance is a live studio: preview first, controls beneath. */
+.app .appearance-stage { margin: 0 0 24px; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; padding: 0 15px; gap: 18px; background-color: var(--chat-bg); }
+.preview-topline { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 -15px; padding: 12px 14px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.preview-topline > span:nth-child(2) { max-width: 40%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
+.preview-topline > svg { width: 17px; height: 17px; color: var(--muted); }
+.preview-live { display: inline-flex; align-items: center; gap: 5px; color: var(--muted); font-size: 9px; }
+.preview-live > i { width: 4px; height: 4px; border-radius: 50%; background: var(--muted); }
+.app .appearance-stage .message-row { gap: 9px; }
+.app .appearance-stage .message-avatar { width: 29px; height: 29px; border-radius: 7px; flex-shrink: 0; }
+.app .appearance-stage .bubble { max-width: calc(100% - 48px); font-size: calc(12px * var(--bub-k)); }
+.preview-composer { display: flex; align-items: center; gap: 12px; padding: 11px 13px; margin: 0 -15px; background: var(--surface); border-top: 1px solid var(--line); }
+.preview-composer > span { flex: 1; background: var(--control); padding: 9px 12px; border-radius: 22px; font-size: 10px; color: var(--muted); }
+.preview-composer svg { width: 18px; height: 18px; color: var(--muted); }
+.app #page-appearance > .settings-group { padding: 18px 15px; margin-bottom: 14px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
+.app #page-appearance .settings-group > h4 { color: var(--ink); border: 0; padding: 0; margin: 0 0 15px; font-size: 12px; font-weight: 550; letter-spacing: 0; }
+.app .group-hint { display: block; margin: 5px 0 0; font-size: 10px; font-weight: 400; color: var(--muted); }
+.app .theme-options { gap: 10px; }
+.app .theme-options button { position: relative; gap: 9px; min-height: 51px; padding: 10px; background: var(--subtle); border-radius: 11px; font-size: 12px; }
+.app .theme-options button[aria-pressed="true"]::after { content: "✓"; position: absolute; right: 9px; top: 50%; transform: translateY(-50%); font-size: 11px; }
+.app .theme-sample { width: 23px; height: 23px; }
+.app .palette-options { gap: 5px; }
+.app .palette-option { min-width: 0; min-height: 74px; padding: 10px 2px 8px; border-radius: 11px; background: var(--subtle); }
+.app .palette-option small { font-size: 9px; }
+.app .palette-swatch i { width: 30px; height: 22px; border-radius: 9px 9px 3px 9px; }
+.app .font-options button { min-height: 40px; border-radius: 8px; font-size: 12px; }
+.app .skin-grid { gap: 8px; }
+.app .skin-chip { border-radius: 10px; background: var(--subtle); min-height: 68px; }
+.app .skin-tools { flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.app .local-note { line-height: 1.8; font-size: 10px; letter-spacing: 0; }
+.app .background-option { font-size: 11px; gap: 8px; }
+.app .background-option .swatch { border-radius: 10px; }
+
+/* Settings are compact grouped preference lists, never decorative cards. */
+.settings-profile { display: flex; align-items: center; gap: 14px; padding: 18px 15px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 24px; }
+.settings-profile > span { min-width: 0; flex: 1; }
+.settings-profile > svg { color: var(--muted); width: 19px; height: 19px; }
+.profile-stack { display: flex; width: 76px; flex-shrink: 0; }
+.profile-stack > img { width: 45px; height: 45px; border: 3px solid var(--panel); border-radius: 15px; }
+.profile-stack > img + img { margin-left: -13px; margin-top: 10px; }
+.app #settings-body > .settings-group { padding: 0 15px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 16px; overflow: hidden; }
+.app #settings-body > .settings-group > h4 { padding: 14px 0 12px; margin: 0; color: var(--muted); border-bottom: 1px solid var(--line); font-size: 11px; letter-spacing: 0; font-weight: 450; }
+.app #settings-body .field-label { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 15px; margin: 0; min-height: 59px; border-bottom: 1px solid var(--line); font-size: 12px; }
+.app #settings-body .field-label:last-child { border: 0; }
+.app #settings-body .field-label input { flex: 0 1 65%; min-width: 0; width: 65%; background: transparent; border: 0; text-align: right; padding: 12px 0; font-size: 13px; color: var(--ink); }
+.app #settings-body .avatar-row { padding: 14px 0; gap: 12px; border-bottom: 1px solid var(--line); }
+.app #settings-body .avatar-row:last-child { border-bottom: 0; }
+.app .avatar-preview { border: 0; padding: 0; border-radius: 13px; width: 44px; height: 44px; }
+.app .avatar-preview img { border-radius: 13px; }
+.app .avatar-info strong { font-size: 12px; font-weight: 450; }
+.app .avatar-info small { font-size: 10px; margin-top: 4px; }
+.app .avatar-tools .text-button { min-height: 40px; font-size: 10px; }
+.app #settings-body .setting-row { padding: 15px 0; border-bottom: 1px solid var(--line); margin: 0; min-height: 67px; }
+.app #settings-body .setting-row:last-child { border-bottom: 0; }
+.app #settings-body .setting-row > span:first-child { min-width: 0; }
+.app .setting-row strong { font-size: 12px; font-weight: 450; line-height: 1.5; }
+.app .setting-row small { margin-top: 4px; font-size: 10px; }
+.app .range-wrap { flex: 0 0 43%; width: 43%; min-width: 0; gap: 7px; }
+.app .range { min-width: 0; width: 100%; }
+.app .range-value { font-size: 10px; min-width: 37px; font-variant-numeric: tabular-nums; }
+.app .setsec { padding: 12px 2px 10px; margin: 7px 0 0; border: 0; font-size: 12px; font-weight: 550; color: var(--ink); letter-spacing: 0; }
+.app #settings-body .wall-preview { margin-top: 12px; border-radius: 10px; height: 78px; background: var(--subtle); border: 1px dashed var(--line); font-size: 11px; }
+.app #settings-body .wall-tools { margin-block: 8px; }
+.app #settings-body .wall-tools button { min-height: 40px; font-size: 11px; }
+.app #settings-body .settings-group .settings-group { padding-top: 15px; margin-bottom: 18px; border-top: 1px solid var(--line); }
+.app #settings-body .settings-group .settings-group h4 { display: none; }
+.app .data-tools { flex-wrap: wrap; gap: 8px; }
+.app .data-tools .secondary-button { padding: 10px 12px; font-size: 11px; min-height: 40px; }
+
+/* Dedicated telephone surfaces. Existing call state machine is unchanged. */
+.dial-contact { display: flex; align-items: center; gap: 13px; background: var(--panel); padding: 17px; border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 25px; }
+.dial-contact > img { width: 53px; height: 53px; border-radius: 16px; flex-shrink: 0; }
+.dial-contact > span:not(.dial-contact-icon) { flex: 1; min-width: 0; }
+.dial-contact strong { font-size: 16px; }
+.dial-contact-icon { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; background: var(--subtle); color: var(--muted); }
+.dial-contact-icon > svg { width: 19px; height: 19px; }
+.call-month-label { margin-bottom: 12px; }
+.app .call-stat { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); gap: 0; padding: 17px 4px; }
+.app .call-stat-cell { border: 0; border-right: 1px solid var(--line); border-radius: 0; padding: 3px 3px; }
+.app .call-stat-cell:last-child { border-right: 0; }
+.app .call-stat-cell b { font-size: 20px; letter-spacing: -.5px; font-weight: 550; }
+.app .call-stat-cell span { margin-top: 7px; font-size: 9px; }
+.app .call-page-tools { margin: 18px 0 8px; }
+.app .call-page-tools button { width: 100%; min-height: 48px; display: flex; justify-content: center; border-radius: 13px; font-size: 12px; }
+.app .call-page-note { font-size: 10px; line-height: 1.8; }
+.app .call-log-head { margin-top: 28px; color: var(--ink); font-size: 12px; }
+.app .call-list { background: var(--panel); border-radius: var(--radius); padding-inline: 14px; }
+.app .call-row { min-height: 72px; }
+.app .call-row-ic { width: 35px; height: 35px; border-radius: 12px; }
+.app .call-row-body strong { font-size: 12px; }
+.app .call-row-body small { font-size: 9px; }
+.app .call-row-right { font-size: 10px; }
+.app .call-view { isolation: isolate; background: var(--surface); }
+.app .call-view::before { content: ""; position: absolute; z-index: -1; left: 50%; top: 35%; width: min(76vw, 390px); aspect-ratio: 1; border: 1px solid var(--line); border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 0 36px var(--surface), 0 0 0 37px var(--line); pointer-events: none; opacity: .65; }
+.app .call-header { min-height: 76px; padding: 17px 22px; }
+.call-header > span { display: flex; align-items: center; gap: 8px; font-size: 11px; letter-spacing: 0; }
+.call-header > span > svg { width: 15px; height: 15px; }
+.call-header > span > small { margin-left: 8px; padding-left: 12px; border-left: 1px solid var(--line); font-size: 8px; color: var(--muted); letter-spacing: 1px; }
+.app .call-person { justify-content: flex-start; padding: clamp(45px, 10vh, 105px) 20px 20px; }
+.app .call-person > img { width: 112px; height: 112px; border-radius: 32px; border: 5px solid var(--panel); }
+.app .call-person h2 { font-size: 25px; font-weight: 550; margin-top: 26px; letter-spacing: -.5px; }
+.app .call-person p { font-size: 12px; margin-top: 11px; }
+.app .call-person time { font-size: 34px; letter-spacing: 1px; font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; }
+.app .call-bottom { padding-bottom: max(42px, env(safe-area-inset-bottom)); }
+.app .call-actions { gap: 30px; }
+.app .call-actions button > span { width: 62px; height: 62px; background: var(--panel); border: 1px solid var(--line); }
+.app #call-end > span { background: #b64242; color: white; border-color: transparent; }
+.app #call-accept > span { background: #d7e7f2; color: #30343a; border-color: transparent; }
+.app #call-collapse > span { width: 62px; height: 62px; }
+.app #call-mute[aria-pressed="true"] > span { background: var(--action-bg); color: var(--action-ink); }
+.app #call-return { width: 100%; border-radius: 12px; min-height: 46px; font-size: 12px; }
+
+/* Decisions and dialogs share the compact messenger vocabulary. */
+.app .history-date { font-size: 11px; letter-spacing: 0; border: 0; margin-bottom: 14px; }
+.app .history-item { margin-left: 5px; padding: 0 0 22px 17px; border-left: 1px solid var(--line); }
+.app .history-item h4 { font-family: inherit; font-size: 14px; font-weight: 500; line-height: 1.7; }
+.app .history-item p { border-radius: 11px; background: var(--panel); font-size: 12px; padding: 12px 14px; }
+.app .empty-state { border: 1px solid var(--line); border-radius: var(--radius); padding: 30px 20px; background: var(--panel); }
+.app .empty-state h4 { font-family: inherit; font-size: 15px; font-weight: 550; letter-spacing: 0; }
+.app .sheet { border-radius: 22px 22px 0 0; }
+.app .sheet h3 { font-family: inherit; font-size: 19px; letter-spacing: -.3px; font-weight: 550; }
+.app .sheet-input { border-radius: 10px; }
+.app .sheet-item { min-height: 54px; }
+.app .primary-button, .app .secondary-button { min-height: 42px; }
+
+@media (min-width: 600px) {
+  .app .chat-header { min-height: 88px; padding-inline: 24px; }
+  .app .contact-info h1 { font-size: 19px; }
+  .app .conversation { padding-inline: 25px; }
+  .app .composer-area { padding: 16px 23px max(20px, env(safe-area-inset-bottom)); }
+  .app .menu-content { padding-top: 30px; }
+  .connection-panel { padding: 20px 28px 17px; }
+  .connection-pair { padding-top: 27px; gap: 27px; }
+  .connection-person > img { width: 74px; height: 74px; border-radius: 22px; }
+  .connection-line { margin-top: 30px; }
+  .connection-line > i { width: 34px; }
+  .app .messenger-grid > button { min-height: 119px; padding: 19px; }
+  .app .messenger-grid > button:hover { padding-left: 19px; }
+  .app .detail-page { padding: 30px 26px 50px; }
+  .app .appearance-stage { padding-inline: 22px; }
+  .preview-topline, .preview-composer { margin-inline: -22px; padding-inline: 20px; }
+}
+@media (max-width: 350px) {
+  .app .menu-content { padding-inline: 15px; }
+  .connection-panel { padding-inline: 14px; }
+  .connection-pair { gap: 8px; }
+  .connection-line { gap: 5px; }
+  .connection-line > i { width: 10px; }
+  .app .messenger-grid > button { padding: 14px 12px; }
+  .app .messenger-grid > button:hover { padding-left: 12px; }
+  .app .detail-page { padding-inline: 14px; }
+  .app .section-intro h3 { font-size: 22px; }
+  .app #page-appearance > .settings-group { padding-inline: 12px; }
+  .app .theme-options button { font-size: 11px; }
+  .app .palette-option small { font-size: 8px; }
+  .app .palette-swatch i { width: 25px; }
+  .app .avatar-tools { gap: 6px; }
+  .app .range-wrap { flex-basis: 42%; width: 42%; }
+  .app .composer-area { padding-inline: 7px; }
+  .app .composer { gap: 3px; }
+  .app .composer .icon-button { min-width: 32px; width: 32px; }
+  .messenger-wordmark > span { font-size: 7px; }
+}
+@media (max-height: 650px) {
+  .app .call-person { padding-top: 25px; }
+  .app .call-person > img { width: 84px; height: 84px; border-radius: 25px; }
+  .app .call-person h2 { margin-top: 15px; font-size: 22px; }
+  .app .call-bottom { padding-bottom: max(20px, env(safe-area-inset-bottom)); }
+  .app .call-waves { margin-top: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app *, .app *::before, .app *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+}
