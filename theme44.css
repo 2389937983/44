@@ -1,0 +1,292 @@
+/* 44: reference chat layout. User bubble CSS is applied after this layer. */
+:root[data-theme="dark"] { color-scheme: dark; background: #151515; }
+:root[data-theme="light"] { color-scheme: light; background: #e9e9eb; }
+.app[data-theme="dark"] {
+  --ink: #f0f0f0; --muted: #a1a1a1; --line: #303030;
+  --surface: #1e1e1e; --chat-bg: #1e1e1e; --control: #343434;
+  --hover: #3d3d3d; --subtle: #272727; --focus: #e0e0e0;
+  --bubble-border: #ffffff0d; --action-bg: #ececec; --action-ink: #252525;
+  color-scheme: dark;
+}
+.app[data-theme="light"] {
+  --ink: #29292d; --muted: #737378; --line: #e3e3e6;
+  --surface: #ffffff; --chat-bg: #f7f7f8; --control: #ededf0;
+  --hover: #e3e3e7; --subtle: #f3f3f5; --focus: #55555b;
+  --bubble-border: #00000012; --action-bg: #303034; --action-ink: #ffffff;
+  color-scheme: light;
+}
+.app { max-width: 720px; min-height: 0; border: 0; color: var(--ink); background: var(--surface); }
+.app[data-theme][data-background="white"] { --chat-bg: var(--surface); }
+.app[data-background="paper"] .conversation,
+.app[data-background="paper"] .bubble-preview {
+  background-image: repeating-linear-gradient(transparent 0 27px, var(--line) 28px, transparent 29px);
+}
+.app .icon-button { color: var(--ink); }
+.app .icon-button:hover { background: var(--subtle); }
+.app :is(button, input, textarea, [tabindex]):focus-visible { outline-color: var(--focus); }
+.chat-header {
+  display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px;
+  align-items: center; gap: 12px; min-height: 86px; padding: 14px 18px;
+  border: 0; background: var(--surface); z-index: 10;
+}
+.menu-button { width: 44px; margin: 0; }
+.menu-button svg { width: 24px; height: 24px; }
+.contact-info { min-width: 0; text-align: center; }
+.contact-info h1 { font-size: 17px; font-weight: 550; letter-spacing: .2px; margin: 0 0 5px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.contact-info > span { color: var(--muted); font-size: 11px; letter-spacing: .3px; }
+.more-wrap { width: 44px; justify-self: end; }
+.more-wrap > .icon-button { width: 44px; }
+.profile-menu { top: 49px; right: 0; width: 218px; padding: 8px; background: var(--subtle); border: 1px solid var(--line); box-shadow: 0 10px 34px #00000024; border-radius: 14px; }
+.profile-menu p { color: var(--muted); }
+.profile-menu button { color: var(--ink); min-height: 46px; border-radius: 8px; }
+.profile-menu button:hover { background: var(--hover); }
+.conversation { padding: 0 15px; background: var(--chat-bg); scrollbar-color: var(--control) transparent; }
+.messages { gap: 23px; padding: 0 0 28px; }
+.message-gap { color: var(--muted); gap: 5px; padding: 3px 0 1px; }
+.messages > .message-gap:first-child { padding-top: 10px; padding-bottom: 8px; }
+.gap-note { font-size: 9px; letter-spacing: 1.5px; }
+.gap-time { font-size: 9px; color: var(--muted); }
+.message-row { gap: 9px; align-items: flex-start; }
+.message-row.peer { --row-bubble: var(--peer-bubble); --row-text: var(--peer-text); }
+.message-row.self { --row-bubble: var(--self-bubble); --row-text: var(--self-text); --row-border: var(--self-border); --row-shadow: var(--self-shadow); }
+.message-meta { width: 36px; gap: 6px; }
+.message-avatar { width: 34px; height: 34px; border-radius: 7px; }
+.message-meta time { font-size: 7px; color: var(--muted); letter-spacing: -.2px; }
+.message-receipt { font-size: 8px; margin-top: 0; }
+/* 气泡宽度上限要把**两侧**的头像列都让出来：
+   一行里只有一侧有头像（对方行在左、我的行在右），若只减一侧，
+   对方的长气泡就会伸到我的头像底下（实测 390 宽时会重叠 34px）。
+   36(头像) × 2 + 9(间距) × 2 = 90，所以这里减 90 而不是 46。 */
+.message-stack { min-width: 0; max-width: calc(100% - 90px); display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+.self .message-stack { align-items: flex-end; }
+.message-stack .bubble { max-width: min(calc(430px * var(--bub-k)), 100%); }
+.bubble { border: 1px solid var(--bubble-border); border-radius: 19px 19px 19px 4px; padding: calc(8px * var(--bub-k)) calc(12px * var(--bub-k)); margin: 0; line-height: 1.6; box-shadow: none; }
+.self .bubble { border-radius: 19px 19px 4px 19px; }
+.bubble::before { display: none; }
+.bubble p { white-space: pre-wrap; }
+.message-quote { margin: 0 2px; padding: 1px 7px; border-left: 2px solid #84949e; color: var(--muted); font-size: calc(10px * var(--bub-k)); line-height: 1.65; overflow-wrap: anywhere; }
+.self .message-quote { border-left: 0; border-right: 2px solid #84949e; text-align: right; }
+.is-continuation { margin-top: -17px; }
+.is-continuation .message-meta { visibility: hidden; height: 0; overflow: hidden; }
+.is-continuation.peer .bubble { border-top-left-radius: 4px; }
+.is-continuation.self .bubble { border-top-right-radius: 4px; }
+/* Start: large top / tight bottom; middle: both tight; end: tight top / large bottom.
+   No ID or !important here: explicitly chosen skins and custom CSS can override. */
+.message-row.peer[data-group-position="end"] .bubble { border-bottom-left-radius: 19px; }
+.message-row.self[data-group-position="end"] .bubble { border-bottom-right-radius: 19px; }
+/* In a group the avatar column stays the height of the avatar. Time and receipt
+   remain underneath it, but no longer make the first inter-bubble gap larger. */
+.message-row[data-group-position="start"] .message-meta { position: relative; gap: 0; }
+.message-row[data-group-position="start"] .message-meta time { position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%); }
+.message-row[data-group-position="start"] .message-receipt { position: absolute; top: calc(100% + 20px); left: 50%; transform: translateX(-50%); white-space: nowrap; }
+.message-recall, .message-poke, .message-typing { color: var(--muted); }
+.conversation-end { display: none; }
+.composer-area { position: relative; background: var(--surface); border-top: 1px solid var(--line); padding: 12px 13px max(14px, env(safe-area-inset-bottom)); }
+.composer { align-items: center; gap: 7px; }
+.composer .icon-button { width: 36px; height: 44px; border-radius: 10px; }
+.composer .icon-button svg { width: 26px; height: 26px; }
+.input-wrap { background: var(--control); border: 1px solid var(--line); border-radius: 28px; padding: 0 14px; }
+.input-wrap:focus-within { box-shadow: 0 0 0 1px var(--muted); }
+.input-wrap textarea { color: var(--ink); font-size: 14px; line-height: 20px; }
+.input-wrap textarea::placeholder { color: var(--muted); }
+.quick-toggle svg { border: 1.7px solid currentColor; padding: 3px; }
+.composer .send-button { display: none; border-radius: 22px; padding: 0 12px; height: 40px; background: var(--action-bg); color: var(--action-ink); font-size: 12px; letter-spacing: 0; }
+.composer.has-text .send-button { display: block; }
+.composer.has-text #quick-toggle { display: none; }
+.quick-actions { background: var(--subtle); border-color: var(--line); border-radius: 17px; margin-bottom: 12px; padding: 9px 5px 8px; gap: 8px; }
+.quick-handle { background: var(--control); }
+.quick-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1px; }
+.quick-grid button { padding: 8px 0; gap: 7px; border-radius: 10px; }
+.quick-grid button:hover, .quick-grid button:focus-visible { background: var(--hover); }
+.quick-icon { width: 39px; height: 39px; background: var(--control); border-color: var(--line); color: var(--ink); border-radius: 12px; }
+.quick-label { color: var(--ink); font-size: 11px; }
+.quick-note { display: none; }
+.emoji-picker { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; padding: 10px; margin-bottom: 12px; background: var(--subtle); border: 1px solid var(--line); border-radius: 14px; }
+.emoji-picker button { min-height: 42px; border-radius: 8px; font-size: 15px; }
+.emoji-picker button:nth-child(n+9) { grid-column: span 2; font-size: 12px; }
+.emoji-picker button:hover { background: var(--hover); }
+.quote-bar { background: var(--subtle); color: var(--muted); border-color: var(--muted); }
+.quote-bar-label, .quote-bar-cancel { color: var(--muted); }
+.quote-bar-cancel:hover { background: var(--hover); }
+
+/* Theme all inherited feature surfaces, not just the conversation. */
+.menu-view, .detail-view, .sheet { background: var(--surface); color: var(--ink); }
+.page-header { min-height: 76px; }
+.menu-avatar, .avatar-preview { border-color: var(--line); }
+.menu-identity > span, .menu-identity p, .main-navigation small,
+.main-navigation .nav-arrow, .menu-footer, .return-chat,
+.eyebrow, .section-intro p, .settings-group h4, .local-note,
+.setting-row small, .field-hint, .avatar-info small, .sheet-text,
+.sheet-item small, .css-ref, .css-ref b, .css-ref code,
+.bub-ends, .group-value, .skin-chip small, .skin-tools .text-button,
+.lib-data-note, .decision-caption, .decision-count, .decision-index,
+.decision-card-question, .decision-card-note, .decision-back,
+.decision-history-head, .decision-history-question, .decision-history-empty,
+.history-date, .history-date small, .history-item time,
+.empty-state p, .empty-message, .range-value, .setting-control small { color: var(--muted); }
+.main-navigation button > svg, .wall-tools .text-button, .avatar-tools .text-button,
+.decision-history-toggle, .history-item h4, .setting-row strong { color: var(--ink); }
+.search-box, .wall-preview, .decision-card, .decision-result,
+.history-item p, .word-card:nth-child(3n + 2) { background: var(--subtle); color: var(--ink); }
+.field-label input, .field-label textarea, .sheet-input, .setting-control input[type="number"] { background: var(--subtle); color: var(--ink); border-color: var(--line); }
+.card-add-row textarea, .poke-add input { background: var(--subtle); color: var(--ink); border-color: var(--line); }
+.setsec { color: var(--ink); border-color: var(--line); }
+.section-caption, .poke-hint { color: var(--muted); }
+.lib-toolbar .text-button { color: var(--ink); }
+.range { background: var(--control); }
+.range::-webkit-slider-thumb { background: var(--action-bg); }
+.range::-moz-range-thumb { background: var(--action-bg); }
+.search-box input { color: var(--ink); }
+.skin-chip:hover, .skin-chip.is-active { background: var(--subtle); }
+.skin-chip.is-active { border-color: var(--muted); }
+.skin-chip.is-active small, .sheet-item, .word-card button { color: var(--ink); }
+.sheet-item:hover { background: var(--subtle); }
+.primary-button { background: var(--action-bg); color: var(--action-ink); border-radius: 9px; }
+.primary-button:hover { background: var(--action-bg); filter: brightness(.92); }
+.secondary-button { background: var(--control); color: var(--ink); border-radius: 9px; }
+.decision-remove, .decision-add { background: var(--control); color: var(--ink); }
+.switch { background: var(--control); }
+.switch:checked { background: #a6b6c1; }
+.switch:checked::before { background: #fff; }
+.chip, .mode-chip, .font-options button, .background-option { color: var(--muted); }
+.chip.is-active, .mode-chip.is-active, .font-options button[aria-pressed="true"] { color: var(--ink); border-color: var(--muted); background: var(--subtle); }
+.background-option[aria-pressed="true"] { color: var(--ink); }
+.background-option[aria-pressed="true"] .swatch { border-color: var(--muted); }
+.swatch.soft { background: var(--chat-bg); }
+.swatch.white { background: var(--surface); }
+.swatch.paper { background-color: var(--surface); background-image: repeating-linear-gradient(transparent 0 27px, var(--line) 28px, transparent 29px); }
+.swatch { border-color: var(--line); }
+.bubble-preview { padding: 18px 12px; }
+.bubble-preview .bubble { max-width: calc(100% - 44px); }
+.lib-actions .text-button { background: var(--subtle); color: var(--ink); border-color: var(--line); }
+.empty-state { border-color: var(--line); }
+.decision-card, .decision-history-row { border-color: var(--line); }
+.primary-button.danger { background: #b3261e; color: #fff; }
+.app[data-theme="dark"] .danger, .app[data-theme="dark"] .history-actions .text-button { color: #ffb2aa; }
+.app[data-theme="dark"] .word-card-actions .card-del, .app[data-theme="dark"] .poke-row button { color: #ffb2aa; }
+.app[data-theme="dark"] .primary-button.danger { color: #fff; }
+.unread-dot { background: #d7e7f2; color: #30343a; }
+.theme-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.theme-options button { display: flex; align-items: center; gap: 12px; padding: 13px; border: 1px solid var(--line); border-radius: 11px; font-size: 13px; }
+.theme-options button[aria-pressed="true"], .palette-option[aria-pressed="true"] { border-color: var(--focus); background: var(--subtle); }
+.theme-sample { width: 29px; height: 29px; border-radius: 50%; border: 1px solid #88888855; }
+.dark-sample { background: #242424; }
+.light-sample { background: #fff; }
+.group-hint { float: right; font-size: 9px; letter-spacing: 0; }
+.palette-options { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 7px; }
+.palette-option { min-width: 0; padding: 14px 3px 10px; display: flex; flex-direction: column; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 10px; }
+.palette-option small { font-size: 11px; }
+.palette-swatch { display: flex; gap: 3px; }
+.palette-swatch i { width: 34px; height: 23px; border-radius: 9px 9px 2px 9px; border: 1px solid #88888830; }
+
+/* Simulated call: local state only, no audio capture or network connection. */
+.call-view { position: absolute; inset: 0; z-index: 25; display: flex; flex-direction: column; background: var(--surface); color: var(--ink); }
+.call-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; color: var(--muted); font-size: 12px; letter-spacing: 1px; }
+.call-person { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+.call-person > img { width: 100px; height: 100px; border-radius: 24px; border: 1px solid var(--line); }
+.call-person h2 { margin: 24px 0 0; font-size: 23px; font-weight: 500; overflow-wrap: anywhere; text-align: center; }
+.call-person p { font-size: 13px; color: var(--muted); margin: 12px 0; }
+.call-person time { margin-top: 6px; font-size: 27px; font-variant-numeric: tabular-nums; letter-spacing: 3px; }
+.call-waves { display: flex; align-items: center; gap: 4px; height: 40px; margin-top: 20px; }
+.call-waves i { width: 3px; height: 5px; border-radius: 3px; background: var(--muted); }
+.call-view[data-phase="active"] .call-waves i { animation: call-wave 1.3s infinite ease-in-out; }
+.call-waves i:nth-child(2), .call-waves i:nth-child(4) { animation-delay: .2s !important; }
+.call-waves i:nth-child(3) { animation-delay: .4s !important; }
+.call-view[data-phase="ended"] .call-waves { visibility: hidden; }
+/* 响铃（呼叫中/来电中）头像脉冲：接听后停 —— 待机与接通态都不该有它 */
+.call-view[data-phase="calling"] .call-person > img,
+.call-view[data-phase="incoming"] .call-person > img { animation: call-pulse 1.9s infinite ease-out; }
+.call-bottom { padding: 15px 20px max(40px, env(safe-area-inset-bottom)); text-align: center; }
+.call-actions { display: flex; align-items: center; justify-content: center; gap: 30px; flex-wrap: wrap; }
+.call-actions button { display: flex; flex-direction: column; align-items: center; gap: 11px; min-width: 61px; }
+.call-actions button > span { display: grid; place-items: center; width: 58px; height: 58px; border-radius: 50%; background: var(--control); }
+.call-actions small { font-size: 11px; color: var(--muted); }
+#call-end > span { background: #b64242; color: #fff; }
+#call-end svg { transform: rotate(135deg); }
+#call-accept > span { background: #d7e7f2; color: #30343a; }
+#call-mute[aria-pressed="true"] > span { background: var(--action-bg); color: var(--action-ink); }
+#call-mute[aria-pressed="true"] svg { opacity: .4; }
+#call-collapse > span { width: 46px; height: 46px; color: var(--ink); }
+#call-return { max-width: 240px; margin: 0 auto; }
+@keyframes call-wave { 0%, 100% { height: 5px; } 50% { height: 22px; } }
+@keyframes call-pulse {
+  0% { box-shadow: 0 0 0 0 #d7e7f255; }
+  70% { box-shadow: 0 0 0 14px #d7e7f200; }
+  100% { box-shadow: 0 0 0 0 #d7e7f200; }
+}
+
+/* 通话小窗：绝对定位在 #app 里（包含块是 .app，祖先链无 transform），
+   所以 pointer 的视口坐标要换算成 .app 局部坐标再写 left/top。
+   拖动与夹取都在 call.js 里做，这里只管长相与层次（盖住外壳、不盖住 toast）。 */
+.call-mini {
+  position: absolute; z-index: 24; right: 14px; bottom: 96px;
+  display: flex; align-items: center; gap: 2px;
+  padding: 5px 5px 5px 6px; max-width: 62%;
+  background: var(--subtle); border: 1px solid var(--line);
+  border-radius: 999px; box-shadow: 0 8px 24px #0000002e;
+  touch-action: none; cursor: grab; user-select: none;
+}
+.call-mini.dragging { cursor: grabbing; box-shadow: 0 12px 30px #00000042; }
+.call-mini-body { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 0 4px 0 0; }
+.call-mini-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.call-mini-text { font-size: 11px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.call-mini-hang { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: #b64242; color: #fff; flex-shrink: 0; }
+.call-mini-hang svg { width: 15px; height: 15px; stroke-width: 2; }
+
+/* 聊天流里的通话卡 */
+.call-bubble { display: flex; flex-direction: column; gap: 6px; min-width: 168px; cursor: pointer; }
+.call-bubble-head { display: flex; align-items: center; gap: 9px; }
+.call-bubble-head svg { width: 20px; height: 20px; flex-shrink: 0; }
+.call-bubble-col { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.call-bubble-col strong { font-size: calc(13px * var(--bub-k)); font-weight: 550; }
+.call-bubble-col small { font-size: calc(10px * var(--bub-k)); opacity: .72; }
+.call-bubble-foot { font-size: calc(9px * var(--bub-k)); opacity: .55; letter-spacing: .4px; }
+
+/* 通话记录页 */
+.call-stat { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-bottom: 18px; }
+.call-stat-cell { border: 1px solid var(--line); border-radius: 11px; padding: 13px 6px; text-align: center; }
+.call-stat-cell b { display: block; font-size: 17px; font-weight: 550; font-variant-numeric: tabular-nums; }
+.call-stat-cell span { display: block; margin-top: 5px; font-size: 10px; color: var(--muted); }
+.call-page-tools { margin: 14px 0; }
+.call-page-tools .primary-button, .call-page-tools .secondary-button { display: inline-flex; align-items: center; gap: 8px; padding: 12px 18px; }
+.call-page-tools svg { width: 17px; height: 17px; }
+.call-page-note { font-size: 10px; line-height: 1.8; color: var(--muted); margin: 0 0 6px; }
+.call-log-head { margin: 26px 0 12px; }
+.call-list { display: flex; flex-direction: column; }
+.call-row { display: flex; align-items: center; gap: 11px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+.call-row:last-child { border-bottom: 0; }
+.call-row-ic { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--subtle); color: var(--ink); flex-shrink: 0; }
+.call-row-ic svg { width: 15px; height: 15px; }
+.call-row.miss .call-row-ic { color: #ffb2aa; }
+.call-row-body { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+.call-row-body strong { font-size: 13px; font-weight: 500; }
+.call-row-body small { font-size: 10px; color: var(--muted); }
+.call-row-right { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; flex-shrink: 0; }
+.call-row.miss .call-row-right { color: #e08a80; }
+@media (min-width: 600px) {
+  .chat-header { min-height: 100px; padding-inline: 24px; }
+  .contact-info h1 { font-size: 20px; }
+  .contact-info > span { font-size: 12px; }
+  .conversation { padding-inline: 25px; }
+  .message-avatar { width: 46px; height: 46px; border-radius: 9px; }
+  .message-meta { width: 48px; }
+  .message-row { gap: 14px; }
+  .message-stack { max-width: calc(100% - 124px); }
+  .message-meta time { font-size: 9px; }
+  .bubble { padding: calc(10px * var(--bub-k)) calc(15px * var(--bub-k)); }
+  .composer-area { padding: 17px 25px max(19px, env(safe-area-inset-bottom)); }
+  .composer { gap: 13px; }
+  .composer .icon-button { width: 42px; }
+}
+@media (max-width: 350px) {
+  .chat-header { padding-inline: 10px; gap: 8px; }
+  .composer-area { padding-inline: 7px; }
+  .composer { gap: 3px; }
+  .composer .icon-button { width: 33px; }
+  .input-wrap { padding-inline: 10px; }
+  .input-wrap textarea { font-size: 12px; }
+  .palette-options { gap: 4px; }
+  .palette-swatch { gap: 2px; }
+  .palette-swatch i { width: 28px; }
+}
+@media (prefers-reduced-motion: reduce) { .call-waves i, .call-view .call-person > img { animation: none !important; } }
