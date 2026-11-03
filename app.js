@@ -310,6 +310,12 @@
 
   function updateIdentity() {
     $('#peer-name').textContent = state.peerName;
+    /* 名字下面那行小字：可编辑，留空就整行不占位（不能留一个空 span 撑高度）。 */
+    const tag = $('#peer-tag');
+    if (tag) {
+      tag.textContent = state.peerTag || '';
+      tag.hidden = !state.peerTag;
+    }
     $$('[data-profile-name]').forEach(label => {
       label.textContent = state[label.dataset.profileName + 'Name'];
     });
@@ -655,6 +661,14 @@
       save();
       refreshChrome();
     },
+    /* 顶栏副标题：允许清空（空 = 不显示那一行），所以不能走 setProfile 的「空值忽略」。
+       空白折叠必须和 normalizeState 里一致，否则「改的时候看到的」和「刷新后看到的」不一样。 */
+    setPeerTag(value) {
+      const next = model.cleanText(value, 40).replace(/\s+/g, ' ').trim();
+      state = Object.assign({}, state, { peerTag: next });
+      save();
+      refreshChrome();
+    },
     setShowTime(value) {
       state = Object.assign({}, state, { showTime: !!value });
       save();
@@ -690,7 +704,7 @@
   chat.setTickSink(() => call.tick());
   chat.startHeartbeat();
   /* 验收用的只读/测试把手：不改变产品行为，供浏览器冒烟脚本钉住概率与时序。 */
-  window.SlowApp = { getState: () => state, chat, cardlib, settings, decision, call, setSetting: host.setSetting, setProfile: host.setProfile, setShowTime: host.setShowTime, closeToChat, navigate, quote: setPendingQuote, get pendingQuote() { return pendingQuote; }, exportCards, applyCardImport, askImportTarget, renderCallsPage };
+  window.SlowApp = { getState: () => state, chat, cardlib, settings, decision, call, setSetting: host.setSetting, setProfile: host.setProfile, setPeerTag: host.setPeerTag, setShowTime: host.setShowTime, closeToChat, navigate, quote: setPendingQuote, get pendingQuote() { return pendingQuote; }, exportCards, applyCardImport, askImportTarget, renderCallsPage };
 
   /* ---------------- 绑定 ---------------- */
   $('#peer-avatar-button').addEventListener('click', () => {
