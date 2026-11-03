@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1e1e1e">
+  <meta name="description" content="可切换主题与气泡配色的字卡聊天空间。">
+  <title>私信 · 字卡聊天</title>
+  <link rel="icon" href="assets/peer.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="theme44.css">
+  <link rel="stylesheet" href="messenger44.css">
+  <script defer src="appearance.js"></script>
+  <script defer src="state.js"></script>
+  <script defer src="chat.js"></script>
+  <script defer src="cardlib.js"></script>
+  <script defer src="settings.js"></script>
+  <script defer src="decision.js"></script>
+  <script defer src="call.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="m6 3 4 5-2.5 2.5a16 16 0 0 0 6 6L16 14l5 4-2 3c-1 1-4 0-6-1C7 17 3 12 2 7c0-2 1-3 4-4Z"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2m-7 9v3m-4 0h8"/></symbol>
+    <symbol id="i-smile" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 9h.01M16 9h.01M8 14c2 3 6 3 8 0"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m5 9 7 7 7-7"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m14 5-7 7 7 7"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    <symbol id="i-cards" viewBox="0 0 24 24"><rect x="6" y="5" width="14" height="16" rx="1.5"/><path d="M16 2H3v15m7-6h6m-6 4h4"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="2.5" fill="var(--surface, white)"/><circle cx="16" cy="17" r="2.5" fill="var(--surface, white)"/></symbol>
+    <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 1.7 7.3M3 4v6h6m3-4v6l4 2"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5ZM20 2v4m-2-2h4"/></symbol>
+    <symbol id="i-decision" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8" cy="8" r=".7"/><circle cx="16" cy="16" r=".7"/><circle cx="12" cy="12" r=".7"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8" cy="8" r="1.5"/><path d="m3 17 6-6 5 5 3-3 4 4"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20 5c-3-3-7-1-8 1-1-2-5-4-8-1-4 5 3 10 8 14 5-4 12-9 8-14Z"/></symbol>
+    <symbol id="i-poke" viewBox="0 0 24 24"><path d="M9 11V5.5a2 2 0 0 1 4 0V11m0-1.5a2 2 0 0 1 4 0V13m0-1a2 2 0 0 1 4 0v4.5A5.5 5.5 0 0 1 15.5 22h-2a6 6 0 0 1-4.6-2.2L4 14.5a2 2 0 0 1 3-2.6l2 2.1"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 8V5a2 2 0 0 1 2-2h5l3 3h6a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8Zm0 0h18"/></symbol>
+  </svg>
+
+  <main class="app" id="app" data-theme="dark">
+    <section id="chat-view" class="chat-view" aria-label="聊天">
+      <header class="chat-header">
+        <button id="menu-open" class="icon-button menu-button" aria-label="打开全屏功能菜单"><svg><use href="#i-menu"/></svg><span id="unread-dot" class="unread-dot" hidden></span></button>
+        <div class="contact-info"><h1 id="peer-name">对方</h1><span>字卡陪伴 · 本地</span></div>
+        <div class="more-wrap">
+          <button id="more-open" class="icon-button" aria-label="更多个人选项" aria-expanded="false" aria-controls="profile-menu"><svg><use href="#i-more"/></svg></button>
+          <div id="profile-menu" class="profile-menu" hidden>
+            <p>头像与资料</p>
+            <button id="self-avatar-button"><svg><use href="#i-image"/></svg>更换我的头像</button>
+            <button id="peer-avatar-button"><svg><use href="#i-image"/></svg>更换梦角头像</button>
+            <button data-page="settings"><svg><use href="#i-settings"/></svg>聊天设置</button>
+          </div>
+        </div>
+      </header>
+
+      <div id="conversation" class="conversation" tabindex="0" aria-label="聊天消息">
+        <div id="messages" class="messages" role="log" aria-live="polite" aria-relevant="additions"></div>
+        <div class="conversation-end" aria-hidden="true"><span></span> 未完待续 <span></span></div>
+      </div>
+
+      <div id="msg-actions" class="msg-actions" role="menu" aria-label="消息操作" hidden></div>
+
+      <footer class="composer-area">
+        <div id="quick-actions" class="quick-actions" role="dialog" aria-modal="false" aria-label="更多功能" hidden>
+          <div class="quick-handle" aria-hidden="true"></div>
+          <div class="quick-grid">
+            <button data-page="appearance" type="button"><span class="quick-icon"><svg><use href="#i-spark"/></svg></span><span class="quick-label">美化</span><span class="quick-note">皮肤与气泡</span></button>
+            <button id="quick-decision" type="button"><span class="quick-icon"><svg><use href="#i-decision"/></svg></span><span class="quick-label">决策</span><span class="quick-note">帮我选一次</span></button>
+            <button data-page="cards" type="button"><span class="quick-icon"><svg><use href="#i-cards"/></svg></span><span class="quick-label">字卡库</span><span class="quick-note">替你说的话</span></button>
+            <button data-page="settings" type="button"><span class="quick-icon"><svg><use href="#i-settings"/></svg></span><span class="quick-label">设置</span><span class="quick-note">节奏与资料</span></button>
+            <button id="quick-call" type="button"><span class="quick-icon"><svg><use href="#i-phone"/></svg></span><span class="quick-label">电话</span><span class="quick-note">模拟通话</span></button>
+          </div>
+        </div>
+        <div id="emoji-picker" class="emoji-picker" aria-label="常用表情" hidden></div>
+        <div id="quote-bar" class="quote-bar" hidden>
+          <span class="quote-bar-body"><span class="quote-bar-label">引用</span><span id="quote-bar-text" class="quote-bar-text"></span></span>
+          <button id="quote-bar-cancel" type="button" class="quote-bar-cancel" aria-label="取消引用">✕</button>
+        </div>
+        <form id="composer" class="composer">
+          <button id="call-open" type="button" class="icon-button" aria-label="打开模拟电话" title="模拟电话"><svg><use href="#i-mic"/></svg></button>
+          <div class="input-wrap"><textarea id="message-input" rows="1" maxlength="2000" placeholder="Type a message…" aria-label="聊天输入框"></textarea></div>
+          <button id="emoji-open" type="button" class="icon-button" aria-label="选择表情" aria-controls="emoji-picker" aria-expanded="false"><svg><use href="#i-smile"/></svg></button>
+          <button id="quick-toggle" type="button" class="icon-button quick-toggle" aria-label="展开更多功能" aria-expanded="false" aria-controls="quick-actions"><svg><use href="#i-plus"/></svg></button>
+          <button id="send-button" type="submit" class="send-button" disabled>发送</button>
+        </form>
+      </footer>
+    </section>
+
+    <section id="menu-view" class="menu-view" aria-label="全屏功能菜单" hidden>
+      <header class="page-header"><span class="messenger-wordmark"><svg><use href="#i-smile"/></svg>私信<span>PRIVATE CHAT</span></span><button class="icon-button" data-close aria-label="关闭功能菜单"><svg><use href="#i-close"/></svg></button></header>
+      <div class="menu-content">
+        <section class="connection-panel" aria-label="我们的聊天资料">
+          <div class="panel-caption"><span>这段对话里</span><span class="local-badge">仅保存在本机</span></div>
+          <div class="connection-pair">
+            <div class="connection-person"><img data-avatar="self" src="assets/self.svg" alt="我的头像"><strong data-profile-name="self">我</strong><span>我</span></div>
+            <div class="connection-line" aria-hidden="true"><i></i><svg><use href="#i-heart"/></svg><i></i></div>
+            <div class="connection-person"><img data-avatar="peer" src="assets/peer.svg" alt="梦角头像"><strong data-profile-name="peer">对方</strong><span>梦角</span></div>
+          </div>
+          <p class="connection-note">两个人的对话，一个安静的地方。</p>
+        </section>
+        <div class="panel-caption tools-caption"><span>聊天工具</span><svg><use href="#i-menu"/></svg></div>
+        <nav class="main-navigation messenger-grid" aria-label="已有功能">
+          <button data-page="cards"><svg><use href="#i-cards"/></svg><span><strong>字卡库</strong><small>管理回复短句</small></span><svg class="nav-arrow"><use href="#i-chevron"/></svg></button>
+          <button data-page="calls"><svg><use href="#i-phone"/></svg><span><strong>电话</strong><small>模拟通话与记录</small></span><svg class="nav-arrow"><use href="#i-chevron"/></svg></button>
+          <button data-page="history"><svg><use href="#i-history"/></svg><span><strong>决策历史</strong><small>查看一起做的选择</small></span><svg class="nav-arrow"><use href="#i-chevron"/></svg></button>
+          <button data-page="settings"><svg><use href="#i-settings"/></svg><span><strong>聊天设置</strong><small>资料与互动节奏</small></span><svg class="nav-arrow"><use href="#i-chevron"/></svg></button>
+        </nav>
+        <button class="menu-appearance" data-page="appearance"><span class="appearance-mini" aria-hidden="true"><i></i><i></i></span><span><strong>换个聊天外观</strong><small>黑白主题 · 五款气泡</small></span><svg><use href="#i-chevron"/></svg></button>
+        <button class="return-chat" data-close><svg><use href="#i-back"/></svg>返回对话<span id="unread-dot-return" class="unread-dot" hidden></span></button>
+      </div>
+      <footer class="menu-footer"><span class="privacy-dot"></span>本地字卡陪伴 · 无需联网</footer>
+    </section>
+
+    <section id="detail-view" class="detail-view" aria-label="功能详情" hidden>
+      <header class="page-header"><button id="detail-back" class="icon-button" aria-label="返回上一页"><svg><use href="#i-back"/></svg><span id="unread-dot-back" class="unread-dot" hidden></span></button><h2 id="detail-title"></h2><button class="icon-button" data-close aria-label="返回聊天"><svg><use href="#i-close"/></svg></button></header>
+      <div class="detail-scroll">
+        <section id="page-cards" class="detail-page" hidden>
+          <div class="section-intro"><span class="eyebrow">QUICK REPLIES</span><h3>回复资料夹</h3><p>整理短句，或选一句带回对话。</p></div>
+          <div id="card-modes" class="mode-tabs" role="tablist" aria-label="字卡库分区">
+            <button id="mode-cards" class="mode-chip is-active" type="button" role="tab" aria-selected="true" aria-controls="cards-pane" data-mode="cards">字卡</button>
+            <button id="mode-pokes" class="mode-chip" type="button" role="tab" aria-selected="false" aria-controls="pokes-pane" data-mode="pokes">拍一拍</button>
+          </div>
+
+          <div id="cards-pane" role="tabpanel" aria-labelledby="mode-cards">
+            <div class="lib-actions" data-od-id="cardlib-actions">
+              <button id="group-new" class="text-button" type="button">新建分组</button>
+              <button id="group-manage" class="text-button" type="button">分组设置</button>
+              <button id="card-export" class="text-button" type="button">导出字卡</button>
+              <button id="card-import" class="text-button" type="button">导入字卡</button>
+            </div>
+            <div class="folder-section"><div class="panel-caption"><span>我的分组</span><span>左右滑动切换</span></div><div id="card-groups" class="chips folder-strip" data-od-id="cardlib-tabs" role="tablist" aria-label="字卡分组"></div></div>
+            <div class="lib-toolbar">
+              <label class="search-box"><svg><use href="#i-search"/></svg><input id="card-search" type="search" placeholder="找一句想说的话" aria-label="搜索字卡"></label>
+              <button id="card-add-open" class="text-button" type="button">新增字卡</button>
+            </div>
+            <div id="card-add-row" class="card-add-row" hidden>
+              <textarea id="card-new" rows="3" maxlength="300" placeholder="写一句想说的话，一行一张，空行会跳过" aria-label="新增字卡内容"></textarea>
+              <button id="card-add-do" class="primary-button" type="button">放进字卡库</button>
+            </div>
+            <div class="library-heading"><h4 id="library-selection">全部</h4><span id="library-count" role="status">0 条短句</span></div>
+            <div id="card-list" class="card-list reply-list"></div>
+            <p id="cards-empty" class="empty-message" hidden>还没有找到这句话，换个词试试吧。</p>
+            <p class="lib-data-note">导出会把全部字卡与分组存成一份 JSON；导入认本站备份和 milk 的字卡文件，只取字卡与拍一拍，其余内容一律忽略。</p>
+          </div>
+
+          <div id="pokes-pane" role="tabpanel" aria-labelledby="mode-pokes" hidden>
+            <section class="poke-lib">
+              <div class="section-caption"><span>拍一拍动作池</span><span id="poke-count"></span></div>
+              <p class="poke-hint">双击聊天里的对方头像，就会从池子里抽一句拍一下 TA。池子空了的话，拍一拍会退回成一句普通消息。</p>
+              <div id="poke-list" class="poke-list"></div>
+              <div class="poke-add"><input id="poke-new" type="text" maxlength="60" placeholder="加一条，比如：捏了捏你的脸" aria-label="新的拍一拍动作"><button id="poke-add-do" class="secondary-button" type="button">加入</button></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="page-settings" class="detail-page" hidden>
+          <div class="section-intro"><span class="eyebrow">CHAT PREFERENCES</span><h3>聊天偏好</h3><p>资料、互动与数据，都在这里。</p></div>
+          <div class="settings-profile"><div class="profile-stack"><img data-avatar="peer" src="assets/peer.svg" alt="梦角头像"><img data-avatar="self" src="assets/self.svg" alt="我的头像"></div><span><strong><span data-profile-name="self">我</span> 与 <span data-profile-name="peer">对方</span></strong><small>专属对话 · 设置自动保存</small></span><svg><use href="#i-settings"/></svg></div>
+          <div id="settings-body"></div>
+          <p class="local-note">设置仅保存在当前浏览器，不会上传；改动即时生效。</p>
+        </section>
+
+        <section id="page-appearance" class="detail-page" hidden>
+          <div class="section-intro"><span class="eyebrow">CHAT STUDIO</span><h3>你的聊天，你的样子</h3><p>主题与气泡独立搭配，改动即时预览。</p></div>
+          <div class="bubble-preview appearance-stage" id="bubble-preview" aria-label="实时聊天外观预览">
+            <div class="preview-topline"><span class="preview-live"><i></i>实时预览</span><span data-profile-name="peer">对方</span><svg><use href="#i-more"/></svg></div>
+            <div class="message-row peer"><div class="message-avatar"><img data-avatar="peer" src="assets/peer.svg" alt="梦角头像"></div><div class="bubble"><p>今天过得怎么样？</p></div></div>
+            <div class="message-row self"><div class="message-avatar"><img data-avatar="self" src="assets/self.svg" alt="我的头像"></div><div class="bubble"><p>现在这样，就很喜欢。</p></div></div>
+            <div class="preview-composer" aria-hidden="true"><svg><use href="#i-mic"/></svg><span>发一条消息…</span><svg><use href="#i-smile"/></svg></div>
+          </div>
+          <div class="settings-group"><h4>主题</h4><div class="theme-options" role="group" aria-label="主题"><button type="button" data-theme-choice="dark"><span class="theme-sample dark-sample"></span>黑色</button><button type="button" data-theme-choice="light"><span class="theme-sample light-sample"></span>白色</button></div></div>
+          <div class="settings-group"><h4>我的气泡配色 <span class="group-hint">仅修改我发出的消息</span></h4><div id="palette-options" class="palette-options" role="group" aria-label="我的气泡配色"></div><p class="local-note">灰蓝、粉白、粉灰、灰白均为柔和纯色，不使用渐变。漫画纸片是白底黑字、粗黑边与右下角硬边投影。对方气泡仅随主题切换为灰色或白色；自定义 CSS 仍可覆盖。</p></div>
+          <div class="settings-group"><h4>聊天背景</h4><div class="background-options"><button data-background="soft" class="background-option"><span class="swatch soft"></span>默认</button><button data-background="white" class="background-option"><span class="swatch white"></span>纯色</button><button data-background="paper" class="background-option"><span class="swatch paper"></span>信纸</button></div></div>
+          <div class="settings-group"><h4>文字大小</h4><div class="font-options"><button data-font="14">小</button><button data-font="15">标准</button><button data-font="17">大</button></div></div>
+
+          <div class="settings-group">
+            <h4>气泡大小<span id="bub-pct" class="group-value">100%</span></h4>
+            <div class="bub-slider">
+              <input id="bub-range" type="range" min="20" max="100" step="1" value="100" aria-label="气泡大小">
+              <div class="bub-ends"><span>小 20%</span><span>标准 100%</span></div>
+            </div>
+            <p class="local-note">文字、留白、气泡宽度一起缩放 · 只影响聊天里的气泡。</p>
+          </div>
+
+          <div class="settings-group">
+            <h4>气泡</h4>
+            <div id="bubble-skins" class="skin-grid" role="group" aria-label="气泡皮肤"></div>
+            <div class="skin-tools">
+              <button id="bubble-css-open" class="secondary-button" type="button">自定义气泡 CSS</button>
+              <button id="bubble-css-reset" class="text-button" type="button" hidden>清空自己写的</button>
+            </div>
+            <p id="bubble-css-state" class="local-note">还没有自己上传的 CSS，先用上面的皮肤。</p>
+          </div>
+          <p class="local-note">选择后自动保存，聊天里的变化即时生效。</p>
+        </section>
+
+        <section id="page-history" class="detail-page" hidden>
+          <div class="section-intro"><span class="eyebrow">DECISION LOG</span><h3>一起做过的选择</h3><p>按时间查看问题与结果。</p></div>
+          <div id="history-actions" class="history-actions"><button id="history-clear" class="text-button danger" type="button">清空历史</button></div>
+          <div id="history-list" class="history-list"></div><div id="history-empty" class="empty-state"><svg><use href="#i-history"/></svg><h4>还没有留下选择</h4><p>不着急，从一件小事开始。</p><button id="history-empty-cta" class="secondary-button" type="button">去做一个抉择</button></div>
+        </section>
+
+        <section id="page-calls" class="detail-page" hidden>
+          <div class="section-intro"><span class="eyebrow">LOCAL CALLS</span><h3>电话</h3><p>模拟通话与本月记录，不连接真实语音。</p></div>
+          <div class="dial-contact"><img data-avatar="peer" src="assets/peer.svg" alt="梦角头像"><span><strong data-profile-name="peer">对方</strong><small>字卡陪伴 · 本地模拟</small></span><span class="dial-contact-icon"><svg><use href="#i-phone"/></svg></span></div>
+          <div class="panel-caption call-month-label"><span>本月概览</span><span>仅统计本机记录</span></div>
+          <div id="call-stat" class="call-stat"></div>
+          <div class="call-page-tools"><button id="call-dial" type="button" class="primary-button"><svg><use href="#i-phone"/></svg>打电话给梦角</button></div>
+          <p class="call-page-note">接听结果取决于通话设置；一次只能进行一通模拟电话。</p>
+          <div class="call-page-tools"><button id="call-incoming" type="button" class="secondary-button">模拟 TA 来电</button></div>
+          <p class="call-page-note">手动来电仍遵循总开关与来电开关；自动来电间隔可在设置中调整。</p>
+          <div class="section-caption call-log-head"><span>通话记录</span><span id="call-count"></span></div>
+          <div id="call-list" class="call-list"></div>
+          <p id="call-empty" class="empty-message" hidden>还没有通话记录，先打一通试试。</p>
+        </section>
+      </div>
+    </section>
+    <section id="call-view" class="call-view" role="dialog" aria-modal="true" aria-label="模拟电话" hidden>
+      <header class="call-header"><span><svg><use href="#i-phone"/></svg>模拟电话<small>LOCAL CALL</small></span><button id="call-close" type="button" class="icon-button" aria-label="收起通话，保持通话中"><svg><use href="#i-chevron-down"/></svg></button></header>
+      <div class="call-person"><img id="call-avatar" src="assets/peer.svg" alt="梦角头像"><h2 id="call-name">对方</h2><p id="call-status" role="status">正在呼叫…</p><time id="call-timer" hidden>0:00</time><div class="call-waves" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div></div>
+      <div class="call-bottom"><div class="call-actions"><button id="call-mute" type="button" aria-pressed="false" hidden><span><svg><use href="#i-mic"/></svg></span><small id="call-mute-label">静音</small></button><button id="call-accept" type="button" hidden><span><svg><use href="#i-phone"/></svg></span><small>接听（模拟）</small></button><button id="call-collapse" type="button" hidden><span><svg><use href="#i-chevron-down"/></svg></span><small>收起</small></button><button id="call-end" type="button"><span><svg><use href="#i-phone"/></svg></span><small id="call-end-label">取消呼叫</small></button></div><button id="call-return" type="button" class="secondary-button" hidden>回到聊天</button></div>
+    </section>
+    <div id="call-mini" class="call-mini" hidden>
+      <button id="call-mini-expand" type="button" class="call-mini-body" aria-label="展开通话">
+        <img class="call-mini-avatar" src="assets/peer.svg" alt="">
+        <span class="call-mini-text">通话中</span>
+      </button>
+      <button id="call-mini-hang" type="button" class="call-mini-hang" aria-label="挂断并结束通话"><svg><use href="#i-close"/></svg></button>
+    </div>
+    <input id="avatar-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/avif" hidden>
+    <input id="backup-file" type="file" accept="application/json,.json" hidden>
+    <input id="card-file" type="file" accept="application/json,.json,text/plain" hidden>
+    <input id="bubble-file" type="file" accept=".css,text/css,text/plain" hidden>
+    <div id="sheet-wrap" class="sheet-wrap" hidden><div id="sheet" class="sheet" role="dialog" aria-modal="true" aria-label="操作"></div></div>
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  </main>
+</body>
+</html>
