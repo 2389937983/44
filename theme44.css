@@ -41,7 +41,9 @@
 .profile-menu button { color: var(--ink); min-height: 46px; border-radius: 8px; }
 .profile-menu button:hover { background: var(--hover); }
 .conversation { padding: 0 15px; background: var(--chat-bg); scrollbar-color: var(--control) transparent; }
-.messages { gap: 23px; padding: 0 0 28px; }
+/* 间距统一交给 messenger44.css 的 margin 方案（不用 flex gap，见那里的说明）。
+   这里保留 gap: 0 是为了在任何浏览器里都不出现「gap 失效 → 负 margin 重叠」。 */
+.messages { gap: 0; padding: 0 0 28px; }
 .message-gap { color: var(--muted); gap: 5px; padding: 3px 0 1px; }
 .messages > .message-gap:first-child { padding-top: 10px; padding-bottom: 8px; }
 .gap-note { font-size: 9px; letter-spacing: 1.5px; }
@@ -66,7 +68,9 @@
 .bubble p { white-space: pre-wrap; }
 .message-quote { margin: 0 2px; padding: 1px 7px; border-left: 2px solid #84949e; color: var(--muted); font-size: calc(10px * var(--bub-k)); line-height: 1.65; overflow-wrap: anywhere; }
 .self .message-quote { border-left: 0; border-right: 2px solid #84949e; text-align: right; }
-.is-continuation { margin-top: -17px; }
+/* 同一人连发：只收窄间距、藏掉重复的头像列，不做负 margin 叠压。
+   改用 margin-top 常值，gap 失效与否都不影响结果。 */
+.is-continuation { margin-top: 6px; }
 .is-continuation .message-meta { visibility: hidden; height: 0; overflow: hidden; }
 .is-continuation.peer .bubble { border-top-left-radius: 4px; }
 .is-continuation.self .bubble { border-top-right-radius: 4px; }

@@ -14,8 +14,16 @@
 .app .chat-header { min-height: 78px; padding: 10px 16px; }
 .app .contact-info h1 { font-size: 17px; font-weight: 600; letter-spacing: 0; }
 .app .contact-info > span { font-size: 11px; letter-spacing: 0; }
-.app .messages { gap: 20px; padding-bottom: 28px; }
-.app .is-continuation { margin-top: -14px; }
+/* ⚠️ 消息间距只用 margin，不用 flex gap：
+   原先靠 `#messages { gap: 20px }` + `.is-continuation { margin-top: -14px }`
+   相加得 6px。但 flex gap 在部分内嵌 WebView / 老 Safari 里不被支持，
+   那时 gap 直接变成 0，负 margin 就把同一人连发的两条叠在一起（实测 -14px）。
+   改为「间距全部写在 margin 上」，任何浏览器算出来都一样。
+   用 `> * + *` 而不是 `.message-row + .message-row`：时间分隔条与「正在输入」
+   也是 #messages 的直接子节点，都得同样对待。 */
+.app .messages { gap: 0; padding-bottom: 28px; }
+.app .messages > * + * { margin-top: 20px; }
+.app .messages > .message-row.is-continuation { margin-top: 6px; }
 .app .message-meta time { font-size: 8px; letter-spacing: -.2px; }
 .app .gap-time { font-variant-numeric: tabular-nums; }
 .app .composer-area { padding: 12px 12px max(16px, env(safe-area-inset-bottom)); }
