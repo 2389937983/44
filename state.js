@@ -1075,7 +1075,7 @@
   }
   function createState() {
     return {
-      peerName: '对方', selfName: '我', peerAvatar: '', selfAvatar: '',
+      peerName: '对方', selfName: '我', peerTag: '字卡陪伴 · 本地', peerAvatar: '', selfAvatar: '',
       showTime: true, fontSize: 15, background: 'soft',
       theme: 'dark', palette: 'gray-blue',
       bubbleSkin: 'classic', bubbleCss: '', bubScale: BUB_DEF,
@@ -1101,6 +1101,9 @@
     for (const key of ['peerName', 'selfName']) {
       if (typeof value[key] === 'string' && value[key].trim()) result[key] = value[key].trim().slice(0, 24);
     }
+    /* 名字下面那行小字（顶栏副标题）。与昵称不同：允许留空 —— 空就是「不显示」，
+       不能像昵称那样把空值退回默认，否则用户删不掉这行字。 */
+    if (typeof value.peerTag === 'string') result.peerTag = value.peerTag.replace(/\s+/g, ' ').trim().slice(0, 40);
     for (const key of ['peerAvatar', 'selfAvatar']) {
       if (isImage(value[key])) result[key] = value[key];
     }
