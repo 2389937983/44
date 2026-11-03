@@ -59,6 +59,22 @@
         labelEl.append(input);
         return labelEl;
       }
+      /* 名字下面那行小字：允许清空（清空 = 不显示），所以走 setPeerTag 而不是 setProfile。 */
+      function tagField() {
+        const labelEl = el('label', 'field-label', '名字下的说明');
+        const input = el('input');
+        input.maxLength = 40;
+        input.autocomplete = 'off';
+        input.placeholder = '留空则不显示';
+        input.dataset.setPeerTag = 'peerTag';
+        input.value = state().peerTag || '';
+        input.addEventListener('input', () => host.setPeerTag(input.value));
+        labelEl.append(input);
+        const note = el('p', 'local-note', '显示在聊天页顶栏「对方」名字下面，留空就整行不显示。');
+        const wrap = el('div', 'field-field');
+        wrap.append(labelEl, note);
+        return wrap;
+      }
       function avatarRow(which, label) {
         const s = state();
         const row = el('div', 'avatar-row');
@@ -138,7 +154,7 @@
       /* 分组上的可选 sec：相邻同 sec 的组归并成一个 .setsec 大标题（29 的设置页分类口径）。 */
       function sectionList() {
         return [
-          { title: '个人资料', build: () => [nameField('selfName', '我的昵称'), nameField('peerName', '梦角昵称')] },
+          { title: '个人资料', build: () => [nameField('selfName', '我的昵称'), nameField('peerName', '梦角昵称'), tagField()] },
           { title: '头像', build: () => [avatarRow('self', '我的头像'), avatarRow('peer', '对方头像')] },
           { title: '聊天显示', build: () => [(() => { const row = el('label', 'setting-row'); const info = el('span'); info.append(el('strong', '', '显示消息时间'), el('small', '', '灰色时间，显示在头像下方')); const input = el('input'); input.type = 'checkbox'; input.className = 'switch'; input.checked = state().showTime; input.addEventListener('change', () => host.setShowTime(input.checked)); row.append(info, input); return row; })()] },
           backgroundGroup(),
