@@ -33,7 +33,10 @@
 .menu-button svg { width: 24px; height: 24px; }
 .contact-info { min-width: 0; text-align: center; }
 .contact-info h1 { font-size: 17px; font-weight: 550; letter-spacing: .2px; margin: 0 0 5px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.contact-info > span { color: var(--muted); font-size: 11px; letter-spacing: .3px; }
+/* 名字下面那行小字：可编辑后要防超长 —— 单行 + 省略号，绝不能折行把顶栏顶高，
+   也不能因为过长出现横向滚动。规则与上面的 h1 保持一致。 */
+.contact-info > span { color: var(--muted); font-size: 11px; letter-spacing: .3px; display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.contact-info > span[hidden] { display: none; }
 .more-wrap { width: 44px; justify-self: end; }
 .more-wrap > .icon-button { width: 44px; }
 .profile-menu { top: 49px; right: 0; width: 218px; padding: 8px; background: var(--subtle); border: 1px solid var(--line); box-shadow: 0 10px 34px #00000024; border-radius: 14px; }
