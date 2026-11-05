@@ -100,7 +100,10 @@
         if (m.cards && m.cards.length) {
           bubble.append(el('p', '', M.composeCards(m.cards)));
         } else {
-          bubble.append(el('p', '', m.text));
+          /* 渲染侧再压一次内部换行：存储层（cleanMessageText）已经做过，
+             但导入旧档、直接改 localStorage、跨版本迁移都可能绕过它，
+             而 .bubble p 是 pre-wrap，一个残留的 \n 就会把四个字断成两行。 */
+          bubble.append(el('p', '', M.flattenMessageText(String(m.text == null ? '' : m.text))));
         }
         return bubble;
       }
