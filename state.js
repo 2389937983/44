@@ -59,6 +59,27 @@
     return prefix + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   }
   const cleanText = (v, max = 2000) => typeof v === 'string' ? v.trim().slice(0, max) : '';
+  /* ---------- 消息正文：内部换行压平 ----------
+     ⚠️ 只用于**消息正文**，不要并进 cleanText —— 字卡库里的原文是用户写的原貌
+     （种子卡就是「没什么特别的事，\n只是想你了。」两行写法），压平会降级字卡。
+     为什么消息正文必须压平：.bubble p 是 white-space: pre-wrap，
+     手机输入法的联想/长按粘贴很容易带进一个 \n，于是四个字「我看不懂」
+     被断成「我看不 / 懂」两行（实测气泡从 86×42 变 43×40）。
+     实测：纯文本四个字 × 7 种屏宽 × 3 种字号 × 3 档缩放 = 63 种组合全部单行；
+     只要正文含一个 \n 就立刻变两行。聊天流里一条消息就是一句话，
+     该不该换行交给气泡宽度去决定。
+     处理规则：换行换成一个空格会多出个「我看不 懂」的空隙，中文读着别扭，
+     所以换行两侧都是中日韩字符时直接删掉（中文不需要词间空格）；
+     其它情况（英文单词、数字之间）才补一个空格，避免单词粘在一起。 */
+  const CJK = '\\u3040-\\u30ff\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff\\u3000-\\u303f';
+  const flattenMessageText = v => v
+    .replace(/\r\n?/g, '\n')
+    .replace(/\t|\f|\v/g, ' ')
+    .replace(/\u00a0|\u2028|\u2029/g, ' ')
+    .replace(new RegExp('([' + CJK + '])[ \\t]*\\n[ \\t]*([' + CJK + '])', 'g'), '$1$2')
+    .replace(/[ \t]*\n[ \t]*/g, ' ')
+    .replace(/ {2,}/g, ' ');
+  const cleanMessageText = (v, max = 2000) => typeof v === 'string' ? flattenMessageText(v).trim().slice(0, max) : '';
   const clampInt = (v, def, min, max) => {
     const n = Number(v);
     if (!Number.isFinite(n)) return def;
@@ -690,7 +711,9 @@
       }
       return out;
     }
-    const text = cleanText(m.text, 2000);
+    /* 正文压平内部换行（否则一句短话会被 \n 断成两行）；引用语也压平。
+       卡片文本保持原貌，拼卡时由 composeCards/flatCardText 处理。 */
+    const text = cleanMessageText(m.text, 2000);
     const cards = (Array.isArray(m.cards) ? m.cards : []).map(c => cleanText(c && c.text !== undefined ? c.text : c, 300)).filter(Boolean).slice(0, 10);
     const type = ['text', 'card', 'poke'].includes(m.type) ? m.type : (cards.length && !text ? 'card' : 'text');
     if (!role || (!text && !cards.length)) return null;
@@ -742,7 +765,7 @@
       const picked = Object.assign({ id, role: 'self', type: 'choice', text: '', date: normalizeDate(d), read: 0 }, choice);
       return Object.assign({}, state, { messages: s.concat([picked]) });
     }
-    const text = cleanText(d.text);
+    const text = cleanMessageText(d.text);
     const cards = (Array.isArray(d.cards) ? d.cards : []).map(c => cleanText(c && c.text !== undefined ? c.text : c, 300)).filter(Boolean).slice(0, 10);
     if (!text && !cards.length) throw new Error('先写一句话，或者选一张字卡。');
     const msg = { id, role: 'self', type: cards.length && !text ? 'card' : 'text', text, date: normalizeDate(d) };
@@ -757,7 +780,7 @@
     const id = cleanText(d.id, 80);
     if (!id || s.some(m => m.id === id)) return null;
     const cards = (Array.isArray(d.cards) ? d.cards : []).map(c => cleanText(c && c.text !== undefined ? c.text : c, 300)).filter(Boolean).slice(0, 10);
-    const text = cleanText(d.text, 2000) || cards.join(' ');
+    const text = cleanMessageText(d.text, 2000) || cards.join(' ');
     if (!text) return null;
     const msg = { id, role: 'peer', type: cards.length && !text ? 'card' : 'text', text, date: normalizeDate(d) };
     if (cards.length) msg.cards = cards;
@@ -1162,7 +1185,7 @@
     BUB_MIN, BUB_MAX, BUB_DEF, bubClamp, bubLabel,
     SETTINGS, SETTING_KEYS, POKE_DEFAULT, SEED_GROUPS, FALLBACK_TALK,
     createState, normalizeState, formatTime, createMessage, choose, validateImage,
-    newId, cleanText, clampInt, isImage,
+    newId, cleanText, cleanMessageText, flattenMessageText, clampInt, isImage,
     normSettings, setSetting, normPokes, setPokes, pokeLine,
     BUBBLE_MAX, BUBBLE_SKINS, USER_CSS_SCOPE, USER_CSS_DICT, bubbleSkinCss,
     splitTop, dictLookup, adaptUserCss, sanitizeUserCss, forceImportant,
