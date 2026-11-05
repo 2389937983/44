@@ -51,13 +51,27 @@
 .messages > .message-gap:first-child { padding-top: 10px; padding-bottom: 8px; }
 .gap-note { font-size: 9px; letter-spacing: 1.5px; }
 .gap-time { font-size: 9px; color: var(--muted); }
+/* 行内竖向对齐：气泡始终贴顶，与头像首行齐平。 */
 .message-row { gap: 9px; align-items: flex-start; }
 .message-row.peer { --row-bubble: var(--peer-bubble); --row-text: var(--peer-text); }
 .message-row.self { --row-bubble: var(--self-bubble); --row-text: var(--self-text); --row-border: var(--self-border); --row-shadow: var(--self-shadow); }
+/* ⚠️ 头像尺寸必须跟着「气泡大小」一起缩放（--bub-k）。
+   不缩的话：头像固定 34px，气泡调到 20% 只剩 10px，行高就被头像那一列撑成 34px。
+   多出来的 24px 不论放哪都会变成气泡之间的间隙：
+     气泡贴顶 → 同一人连发的间隔 6px 涨到 30px；
+     气泡贴底 → 换人的间隔 20px 涨到 44px（两种都试过，只是把问题搬了个位置）。
+   头像按 --bub-k 缩放后，头像列恒不高于气泡 ⇒ 行高恒等于气泡高度，
+   间隔就只由 margin 决定，与缩放彻底无关。
+   注意**列宽保持 36px 不变**：把它缩窄会让「已送达」被挤成竖排。
+   头像给 20px 视觉下限，但这个下限用 transform 放大实现、**不占布局高度** ——
+   若改用 width/height 抬高下限，头像列就会重新高过气泡，间隙又被撑大
+   （实测 20% 时同人间隔从 6px 变 16px）。 */
 .message-meta { width: 36px; gap: 6px; }
-.message-avatar { width: 34px; height: 34px; border-radius: 7px; }
+.message-avatar { width: calc(34px * var(--bub-k)); height: calc(34px * var(--bub-k)); border-radius: 7px; }
 .message-meta time { font-size: 7px; color: var(--muted); letter-spacing: -.2px; }
-.message-receipt { font-size: 8px; margin-top: 0; }
+/* 「已读/已送达」字号不跟着缩（否则缩到 20% 会成小点看不清），
+   但列宽缩小后它会被挤成竖排，所以强制单行并允许溢出头像列。 */
+.message-receipt { font-size: 8px; margin-top: 0; white-space: nowrap; }
 /* 气泡宽度上限要把**两侧**的头像列都让出来：
    一行里只有一侧有头像（对方行在左、我的行在右），若只减一侧，
    对方的长气泡就会伸到我的头像底下（实测 390 宽时会重叠 34px）。
